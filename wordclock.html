@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+    <title>Word Clock</title>
+    <script>
+        
+        var clock = (function(){
+    
+            var check_interval = '1000';        // how often we check the time            
+            var checker = '';
+            var current_seconds = '';
+            var current_minutes = '';
+
+            var translator = {
+                '0'     : '',
+                '1'     : 'one',
+                '2'     : 'two',
+                '3'     : 'three',
+                '4'     : 'four',
+                '5'     : 'five',
+                '6'     : 'six',
+                '7'     : 'seven',
+                '8'     : 'eight',
+                '9'     : 'nine',
+                '10'    : 'ten',
+                '15'    : 'quarter', 
+                '20'    : 'twenty',
+                '25'    : 'twenty-five', 
+                '30'    : 'half'
+            }
+
+            function checkTime()
+            {
+                var date = new Date();
+
+                current_seconds = date.getSeconds();
+                current_minutes = date.getMinutes();
+
+                updateDisplay();
+            }
+    
+            function updateDisplay()
+            {
+                // var output = 'It is ' + current_minutes + ' : ' + current_seconds + '.';
+            
+                var output = 'It is ';
+                var past_to = ' past ';
+                var seconds = current_seconds;
+                var minutes = current_minutes;
+
+                // rounding                
+                seconds = seconds - (seconds % 5);
+                console.log('current: ' , current_seconds, ' | rounded: ', seconds);
+                // console.log("rounded seconds: " , rounded_seconds);
+
+                // past vs to
+                if( current_seconds < 5 ){
+                    past_to = '';
+                    seconds = '0';
+                }
+                else if( current_seconds > 34 ){
+                    seconds = 60 - seconds;
+                    past_to = ' to ';
+                    minutes += 1;
+                }     
+ 
+
+                // cleate the output.
+                var output = 'It is ' + translator[seconds] + past_to + minutes + ' minutes.'; 
+                document.getElementById('display').innerHTML = output;
+            }
+
+            function startCheck()
+            {
+                if(checker){ 
+                    stopCheck(); // stop any existing timers
+                }
+                checker = setInterval(function(){ checkTime(); } , check_interval );
+            }
+
+            function stopCheck()
+            {
+                clearInterval( checker );
+            }
+
+            // save some typing
+            startCheck();
+
+            // 
+
+            return {
+                start: function(){ 
+                    startCheck(); 
+                    return true;
+                },
+                stop: function(){ 
+                    stopCheck(); 
+                    return true;
+                }
+            }
+
+        })();
+
+    </script>
+</head>
+<body>
+    <h1 id="display"></h1>
+</body>
+</html>
+
